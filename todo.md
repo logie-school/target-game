@@ -1,16 +1,16 @@
 # todo
 
 ## ui
-input field (text field)
-dropdown
-buttons (exit, next, back)
-radio buttons
+input field (text field) ✅
+dropdown ✅
+buttons (exit, next, back) ✅
+radio buttons ✅
 checkmark buttons
-image panel, carousel?
+image panel, carousel? ✅
 
 ## ux
 instant feedback (audio, visual) so probably do that notif lib i made
-fun interaction
+fun interaction ✅
 calculation function
 
 ---
