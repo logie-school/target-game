@@ -182,3 +182,74 @@ body {
     opacity: 0.5;
     transition: 0s;
 }
+
+#exit-conf {
+    position: fixed;
+    top: 0;
+    width: 100svw;
+    height: 100svh;
+    background-color: #00000022;
+    backdrop-filter: blur(10px);
+    z-index: 99;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: 0.3s;
+}
+
+.message-wrapper {
+    padding: 40px;
+    border-radius: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 20px #00000055;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message-upper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.message {
+    opacity: 0.5;
+}
+
+.message-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.message-button {
+    padding: 10px 20px;
+    background-color: #d4d4d4;
+    border-radius: 10px;
+    user-select: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.yes-button {
+    background-color: #4363FF;
+    color: #fff;
+}
+
+.message-button:hover {
+    scale: 1.1;
+    transition: 0.3s;
+}
