@@ -12,7 +12,20 @@
     
     <div id="countdown"></div>
     <div id="main-menu">
-        <div class="how-to-play-wrapper main-menu-section"></div>
+        <div class="how-to-play-wrapper main-menu-section">
+            <div class="how-to-play-top-part">
+                <div class="how-to-play-title">How to Play</div>
+                <div class="how-to-play-desc">Simple guide on how to play</div>
+            </div>
+            <div class="image-text">
+                <img src="/imgs/blue.png" alt="blue target">
+                <span>Click on the blue targets to get a point, but if you miss one you lose a life!</span>
+            </div>
+            <div class="image-text">
+                <img src="/imgs/red.png" alt="blue target">
+                <span>Don't click red targets because you lose a life!</span>
+            </div>
+        </div>
         <div class="play-menu-wrapper main-menu-section">
             <div class="play-menu-wrapper-content">
                 <div class="play-menu-top">
@@ -69,14 +82,27 @@
             </div>
             <div class="play-button" onclick="play()">Play!</div>
         </div>
-        <div class="leaderboard-wrapper main-menu-section"></div>
+        <div class="leaderboard-wrapper main-menu-section">
+            <div class="leaderboard-top-part">
+                <div class="leaderboard-title">Leaderboard</div>
+                <div class="leaderboard-desc">Best scores</div>
+            </div>
+            <div class="leaderboard-score-part">
+                <div class="leaderboard-guide">
+                    <div class="leaderboard-guide-name">Name</div>
+                    <div class="leaderboard-guide-score">Score</div>
+                </div>
+                <div class="leaderboard-scores">
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="exit-conf">
         <div class="message-wrapper">
             <div class="message-upper">
                 <div class="message-title">Are you sure?</div>
-                <div class="message">Are you sure you  want to exit?</div>
+                <div class="message">Are you sure you want to exit, your score wont be saved.</div>
             </div>
             <div class="message-buttons">
                 <div class="no-button message-button" onclick="hideExitConf()">Back</div>
@@ -90,13 +116,13 @@
             <div class="lives-title">Lives: </div>
             <span id="lives"></span>
         </div>
-        <div id="streak-wrapper">
+        <div id="time-wrapper">
             <div class="time-title">Time Left: </div>
             <span id="time"></span>
         </div>
-        <div id="streak-wrapper">
-            <div class="streak-title">Streak: </div>
-            <span id="streak"></span>
+        <div id="score-wrapper">
+            <div class="score-title">Score: </div>
+            <span id="score"></span>
         </div>
         <div id="exit-wrapper"> 
             <button id="exit" onclick="showExitConf()">Exit</button>

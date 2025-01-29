@@ -4,15 +4,19 @@ let targetTime = 2.0; // Countdown in seconds
 let targetSize = 100; // Diameter of the target in pixels
 let spawnDecoy = true; // Boolean for spawning decoys
 let spawnIntervalRange = [1, 3]; // Range for random spawn intervals in seconds
-let streak = 0; // Streak counter
+let score = 0; // score counter
 let paused = false // Pause boolean
 let playing = false // Playing boolean
 let showCountdown = true // Show countdown boolean
+let gameDuration = false; // Game duration in seconds, false for infinite
+
+let currentPlayerName;
 
 const gameArea = document.getElementById('game-area');
 const info = document.getElementById('info');
 const livesSpan = document.getElementById('lives');
-const streakSpan = document.getElementById('streak');
+const scoreSpan = document.getElementById('score');
+const timeSpan = document.getElementById('time');
 
 function updateLivesDisplay() {
     livesSpan.innerHTML = '';
@@ -29,12 +33,41 @@ function updateLivesDisplay() {
     }
 }
 
+function updateTimeDisplay() {
+    if (gameDuration === false) {
+        timeSpan.textContent = '∞';
+    } else {
+        timeSpan.textContent = gameDuration;
+    }
+}
+
+function startGameTimer() {
+    if (gameDuration === false) return;
+
+    const timerInterval = setInterval(() => {
+        if (paused) return;
+
+        gameDuration -= 1;
+        updateTimeDisplay();
+
+        if (gameDuration <= 0) {
+            clearInterval(timerInterval);
+            // Logic when time reaches 0
+            updateLeaderboard(currentPlayerName, score);
+            showNotification('Time\'s up! Game over', 'error', 3000);
+            backToMenu();
+            resetGame();
+        }
+    }, 1000);
+}
+
 updateLivesDisplay();
-streakSpan.textContent = streak;
+scoreSpan.textContent = score;
+updateTimeDisplay();
 
 function spawnTarget() {
     if (paused) {
-        return
+        return;
     }
 
     const isDecoy = spawnDecoy && Math.random() < 0.3; // 30% chance of a decoy
@@ -42,7 +75,7 @@ function spawnTarget() {
     target.className = isDecoy ? 'decoy' : 'target';
     target.style.width = `${targetSize}px`;
     target.style.height = `${targetSize}px`;
-    target.classList.add('game-object')
+    target.classList.add('game-object');
 
     // Random position within the game area
     const x = Math.random() * (gameArea.clientWidth - targetSize);
@@ -75,15 +108,16 @@ function spawnTarget() {
                 // Deduct a life if missed
                 if (!paused) {
                     lives -= 1;
-                    streak = 0; // Reset streak
                     updateLivesDisplay();
-                    streakSpan.textContent = streak;
+                    scoreSpan.textContent = score;
                     document.getElementById('game-area').classList.add('lost-life');
                     setTimeout(() => {
                         document.getElementById('game-area').classList.remove('lost-life');
                     }, 500);
                     if (lives <= 0) {
-                        alert('Game Over!');
+                        updateLeaderboard(currentPlayerName, score);
+                        showNotification('Game over', 'error', 3000);
+                        backToMenu();
                         resetGame();
                     }
                     target.classList.add('fadeOut');
@@ -118,32 +152,33 @@ function spawnTarget() {
     target.addEventListener('click', () => {
         target.setAttribute('clicked', true);
         if (!isDecoy) {
-            streak += 1; // Increment streak
-            streakSpan.textContent = streak;
+            score += 1; // Increment score
+            scoreSpan.textContent = score;
             target.classList.add('fadeOut');
             setTimeout(() => {
-    if (gameArea.contains(target)) {
-        gameArea.removeChild(target);
-    }
-}, 300);
+                if (gameArea.contains(target)) {
+                    gameArea.removeChild(target);
+                }
+            }, 300);
         } else {
             // Penalise for clicking a red target
             if (!paused) {
                 lives -= 1;
-                streak = 0; // Reset streak
                 document.getElementById('game-area').classList.add('lost-life');
                 setTimeout(() => {
-                        document.getElementById('game-area').classList.remove('lost-life');
-                    }, 500);
+                    document.getElementById('game-area').classList.remove('lost-life');
+                }, 500);
                 updateLivesDisplay();
-                streakSpan.textContent = streak;
+                scoreSpan.textContent = score;
                 if (lives <= 0) {
-                    alert('Game Over!');
+                    updateLeaderboard(currentPlayerName, score);
+                    showNotification('Game over', 'error', 3000);
+                    backToMenu();
                     resetGame();
                 }
                 target.classList.add('fadeOut');
                 setTimeout(() => {
-                if (gameArea.contains(target)) {
+                    if (gameArea.contains(target)) {
                         gameArea.removeChild(target);
                     }
                 }, 300);
@@ -154,9 +189,11 @@ function spawnTarget() {
 
 function resetGame() {
     lives = 3;
-    streak = 0;
+    score = 0;
+    gameDuration = false;
     updateLivesDisplay();
-    streakSpan.textContent = streak;
+    scoreSpan.textContent = score;
+    updateTimeDisplay();
 }
 
 function getRandomInterval() {
@@ -164,7 +201,7 @@ function getRandomInterval() {
     return Math.random() * (max - min) + min;
 }
 
-function startSpawning() {    
+function startSpawning() {
     function spawnLoop() {
         if (!paused) {
             spawnTarget();
@@ -179,16 +216,16 @@ function startSpawning() {
 
 function showExitConf() {
     if (!showCountdown) {
-        const wrapper = document.getElementById('exit-conf')
-        wrapper.style.opacity = '1'
-        wrapper.style.pointerEvents = 'all'
-        paused = true
-        showCountdown = false
-    
+        const wrapper = document.getElementById('exit-conf');
+        wrapper.style.opacity = '1';
+        wrapper.style.pointerEvents = 'all';
+        paused = true;
+        showCountdown = false;
+
         const element = document.getElementById('countdown');
         element.style.opacity = '0';
         element.textContent = '';
-    
+
         document.querySelectorAll('.game-object').forEach(element => {
             element.classList.add('fadeOut');
             setTimeout(() => {
@@ -201,29 +238,44 @@ function showExitConf() {
 }
 
 function hideExitConf() {
-    const wrapper = document.getElementById('exit-conf')
-    wrapper.style.opacity = '0'
-    wrapper.style.pointerEvents = 'none'
-    paused = false
+    const wrapper = document.getElementById('exit-conf');
+    wrapper.style.opacity = '0';
+    wrapper.style.pointerEvents = 'none';
+    paused = false;
 }
 
 function showMainMenu() {
     const mainMenu = document.getElementById('main-menu');
-    mainMenu.style.opacity = '1'
-    mainMenu.style.pointerEvents = 'all'
-    mainMenu.style.scale = '1'
-    hideExitConf()
+    mainMenu.style.opacity = '1';
+    mainMenu.style.pointerEvents = 'all';
+    mainMenu.style.scale = '1';
+    hideExitConf();
 
-    paused = true
-    
-    showNotification('Returned to menu', 'success', 5000);
-    
+    paused = true;
+
+    showNotification('Returned to menu', 'info', 2000);
+
     document.querySelectorAll('.game-object').forEach(element => {
         element.classList.add('fadeOut');
         setTimeout(() => {
             element.remove();
         }, 300);
     });
+}
+
+function backToMenu() {
+    paused = true;
+    document.querySelectorAll('.game-object').forEach(element => {
+        element.classList.add('fadeOut');
+        setTimeout(() => {
+            element.remove();
+        }, 300);
+    });
+
+    const mainMenu = document.getElementById('main-menu');
+    mainMenu.style.opacity = '1';
+    mainMenu.style.pointerEvents = 'all';
+    mainMenu.style.scale = '1';
 }
 
 document.querySelectorAll('.play-options-wrapper').forEach(wrapper => {
@@ -248,7 +300,7 @@ document.querySelectorAll('.check-button-wrapper').forEach(wrapper => {
 function toggleDropdown(button) {
     const dropdownContent = button.nextElementSibling;
     const arrow = button.querySelector('.dropdown-arrow');
-    
+
     dropdownContent.classList.toggle("show");
     arrow.classList.toggle("rotated");
 }
@@ -258,11 +310,11 @@ function selectOption(option, type, value) {
     const dropdown = option.closest('.dropdown');
     const button = dropdown.querySelector('.dropbtn');
 
-    duration = value
+    gameDuration = value;
 
     // Update dropdown button text
     button.innerHTML = option.innerHTML + '<span class="material-symbols-outlined dropdown-arrow">keyboard_arrow_down</span>';
-    
+
     // Hide the dropdown content
     dropdown.querySelector('.dropdown-content').classList.remove("show");
 
@@ -300,7 +352,7 @@ function startCountdown(seconds) {
         element.style.opacity = '0';
         element.textContent = '';
         clearInterval(intervalId);
-        showCountdown = false
+        showCountdown = false;
     }
 
     const intervalId = setInterval(() => {
@@ -312,7 +364,7 @@ function startCountdown(seconds) {
             element.style.opacity = '0';
             element.textContent = '';
             clearInterval(intervalId);
-            showCountdown = false
+            showCountdown = false;
         }
     }, 1000);
 }
@@ -324,6 +376,8 @@ function areOptionsFilled() {
     const durationText = durationButton.querySelector('.dropdown-item-name');
     const duration = durationText ? durationText.textContent.trim() : '';
     const saveOptions = document.querySelector('.check-button.active-check-button') ? true : false;
+
+    currentPlayerName = name;
 
     if (!name || !difficulty || duration === '') {
         return false;
@@ -348,24 +402,25 @@ function play() {
 
     if (options.saveOptions) {
         localStorage.setItem('gameOptions', JSON.stringify(options));
-    } 
-    
-    // else {
-    //     // localStorage.removeItem('gameOptions');
-    // }
+    }
 
     const mainMenu = document.getElementById('main-menu');
     mainMenu.style.opacity = '0';
     mainMenu.style.pointerEvents = 'none';
     startCountdown(3);
     lives = 3;
-    streak = 0;
-    streakSpan.textContent = streak;
+    score = 0;
+    gameDuration = options.duration === 'Infinite' ? false : parseInt(options.duration);
+    scoreSpan.textContent = score;
     showCountdown = true;
     updateLivesDisplay();
+    updateTimeDisplay();
     setTimeout(() => {
         if (!playing) {
             startSpawning();
+            if (gameDuration !== false) {
+                startGameTimer();
+            }
             playing = true;
         } else {
             paused = false;
@@ -384,20 +439,19 @@ function clearCache() {
 }
 
 function showNotification(message, type = 'info', duration = 5000) {
-
     actualDuration = duration + 500;
-  
+
     const notificationContainer = document.getElementById('notificationContainer');
-    
+
     let color, colorLight, timerColor;
-  
+
     const notification = document.createElement('div');
     notification.className = 'notification';
-    
+
     const messageElem = document.createElement('span');
     messageElem.className = 'message';
     messageElem.textContent = message;
-    
+
     const iconElem = document.createElement('i');
     switch (type) {
         case 'warning':
@@ -426,25 +480,25 @@ function showNotification(message, type = 'info', duration = 5000) {
             iconElem.className = 'fi fi-rr-info';
             break;
     }
-    
+
     iconElem.style.color = color;
     notification.style.color = color;
     notification.style.backgroundColor = colorLight;
     notification.style.setProperty('--timer-color', timerColor); // Set CSS variable
     notification.style.setProperty('--timer-time', `${duration}ms`); // Set CSS variable with 'ms' unit
-  
+
     notification.appendChild(iconElem);
     notification.appendChild(messageElem);
     notificationContainer.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.className = 'notification-fadein notification';
     }, 10);
-  
+
     setTimeout(() => {
         notification.className = 'notification-fadeout notification';
     }, actualDuration - 500);
-  
+
     setTimeout(() => {
         notificationContainer.removeChild(notification);
     }, actualDuration);
@@ -452,6 +506,7 @@ function showNotification(message, type = 'info', duration = 5000) {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadSavedOptions();
+    loadLeaderboard();
 });
 
 function loadSavedOptions() {
@@ -500,3 +555,51 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function updateLeaderboard(name, score) {
+    // Retrieve and update the leaderboard data
+    let leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    leaderboardData.push({ name, score });
+
+    // Sort the leaderboard data by score in descending order
+    leaderboardData.sort((a, b) => b.score - a.score);
+
+    // Store the sorted leaderboard in localStorage
+    localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
+
+    // Render the updated leaderboard
+    renderLeaderboard(leaderboardData);
+}
+
+function loadLeaderboard() {
+    // Retrieve the leaderboard data from localStorage
+    const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
+
+    // Sort the leaderboard data by score in descending order
+    leaderboardData.sort((a, b) => b.score - a.score);
+
+    // Render the sorted leaderboard
+    renderLeaderboard(leaderboardData);
+}
+
+function renderLeaderboard(leaderboardData) {
+    const leaderboard = document.querySelector('.leaderboard-scores');
+    leaderboard.innerHTML = ''; // Clear existing leaderboard entries
+
+    leaderboardData.forEach(entry => {
+        const scoreEntry = document.createElement('div');
+        scoreEntry.className = 'leaderboard-score';
+
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'leaderboard-score-name';
+        nameDiv.textContent = entry.name;
+
+        const scoreDiv = document.createElement('div');
+        scoreDiv.className = 'leaderboard-score-score';
+        scoreDiv.textContent = entry.score;
+
+        scoreEntry.appendChild(nameDiv);
+        scoreEntry.appendChild(scoreDiv);
+        leaderboard.appendChild(scoreEntry);
+    });
+}

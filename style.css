@@ -144,7 +144,7 @@ body {
     gap: 5px;
 }
 
-#streak-wrapper {
+#score-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -303,7 +303,7 @@ body {
     box-sizing: border-box;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
 }
 
@@ -336,11 +336,17 @@ body {
 .play-title {
     font-size: 40px;
     font-weight: 900;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .play-desc {
     font-weight: 500;
     opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 input {
@@ -760,4 +766,111 @@ input:focus {
     background-color: #ff4343;
     color: #fff;
     transition: 0.3s;
+}
+
+.leaderboard-title {
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.leaderboard-desc {
+    font-weight: 500;
+    opacity: 0.5;
+}
+
+.leaderboard-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.leaderboard-guide {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    color: #00000055;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 40px;
+}
+
+.leaderboard-scroes {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.leaderboard-score {
+    border-top: 1px solid #00000022;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+    color: #000;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.leaderboard-score-part {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.leaderboard-scores {
+    overflow-y: auto;
+    height: calc(100% - 40px);
+    box-sizing: border-box;
+}
+
+.how-to-play-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.how-to-play-title {
+    font-size: 40px;
+    font-weight: 900;
+}
+
+.how-to-play-desc {
+    font-weight: 500;
+    opacity: 0.5;
+}
+
+.image-text {
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.image-text img {
+    object-fit: contain;
+    max-width: 100%;
+    width:60%;
+}
+
+#time-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
 }
