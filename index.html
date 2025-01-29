@@ -5,11 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Click the Target Game</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
+    <div id="notificationContainer" class="notification-container"></div>
+    
+    <div id="countdown"></div>
     <div id="main-menu">
-        <div class="play-menu-wrapper main-menu-section"></div>
         <div class="how-to-play-wrapper main-menu-section"></div>
+        <div class="play-menu-wrapper main-menu-section">
+            <div class="play-menu-wrapper-content">
+                <div class="play-menu-top">
+                    <div class="play-title">Target Game</div>
+                    <div class="play-desc">Shoot the blue targets to win!</div>
+                </div>
+                <div class="play-options">
+                    <div class="play-options-wrapper">
+                        <div class="play-query">Whats your name?</div>
+                        <input type="text" class="play-name" placeholder="Name">
+                    </div>
+                    <div class="play-options-wrapper">
+                        <div class="play-query">What difficulty would you like to play on?</div>
+                        <div class="radio-button-wrapper">
+                            <div class="radio-button active-radio-button"></div>
+                            <div class="radio-button-text">Easy</div>
+                        </div>
+                        <div class="radio-button-wrapper">
+                            <div class="radio-button"></div>
+                            <div class="radio-button-text">Hard</div>
+                        </div>
+                    </div>
+                    <div class="play-options-wrapper">
+                        <div class="play-query">How long should the game go for?</div>
+                        <div class="dropdown" id="durationDropdown">
+                            <button onclick="toggleDropdown(this)" class="dropbtn">
+                                <span class="placeholder-text">Choose a time</span>
+                                <span class="material-symbols-outlined dropdown-arrow">keyboard_arrow_down</span>
+                            </button>
+                            <div class="dropdown-content">
+                                <div class="dropdown-item" onclick="selectOption(this, 'duration', 30)">
+                                    <div class="dropdown-item-name">30 seconds</div>
+                                </div>
+                                <div class="dropdown-item" onclick="selectOption(this, 'duration', 60)">
+                                    <div class="dropdown-item-name">1 minute</div>
+                                </div>
+                                <div class="dropdown-item" onclick="selectOption(this, 'duration', false)">
+                                    <div class="dropdown-item-name">Infinite</div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="play-options-wrapper">
+                        <div class="play-query">Should i save your options for next time?</div>
+                        <div class="check-button-wrapper">
+                            <div class="check-button"></div>
+                            <div class="check-button-text">Save options</div>
+                        </div>
+                    </div>
+                    <div class="play-options-wrapper">
+                        <button class="clear-cache" onclick="clearCache()">Forget saved options</button>
+                    </div>
+                </div>
+            </div>
+            <div class="play-button" onclick="play()">Play!</div>
+        </div>
         <div class="leaderboard-wrapper main-menu-section"></div>
     </div>
 
@@ -30,6 +89,10 @@
         <div id="lives-wrapper">
             <div class="lives-title">Lives: </div>
             <span id="lives"></span>
+        </div>
+        <div id="streak-wrapper">
+            <div class="time-title">Time Left: </div>
+            <span id="time"></span>
         </div>
         <div id="streak-wrapper">
             <div class="streak-title">Streak: </div>
