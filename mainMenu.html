@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Target Game - Main Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .menu-container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin: 1.5rem 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .play-button {
+            background-color: #27ae60;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .play-button:hover {
+            background-color: #219a52;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <div class="title">
+            <h1>Target Game</h1>
+            <p class="subtitle">a game about something fun</p>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label for="name">What's your name?</label>
+                <input type="text" id="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="difficulty">What difficulty would you like to play on?</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="duration">How long should the game go for?</label>
+                <input type="number" id="duration" min="1" placeholder="Minutes" required>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="save-options">
+                    <label for="save-options">Should I save your options for next time?</label>
+                </div>
+            </div>
+
+            <button type="submit" class="play-button">Play!</button>
+        </form>
+    </div>
+</body>
+</html>

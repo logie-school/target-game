@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="main-menu">
+        <div class="play-menu-wrapper main-menu-section"></div>
+        <div class="how-to-play-wrapper main-menu-section"></div>
+        <div class="leaderboard-wrapper main-menu-section"></div>
+    </div>
+
     <div id="exit-conf">
         <div class="message-wrapper">
             <div class="message-upper">
@@ -15,7 +21,7 @@
             </div>
             <div class="message-buttons">
                 <div class="no-button message-button" onclick="hideExitConf()">Back</div>
-                <div class="yes-button message-button">Yes</div>
+                <div class="yes-button message-button" onclick="showMainMenu()">Yes</div>
             </div>
         </div>
     </div>
