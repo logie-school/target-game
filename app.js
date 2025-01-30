@@ -1,14 +1,14 @@
-// Configurable variables
-let lives = 3; // Number of lives
-let targetTime = 2.0; // Countdown in seconds
-let targetSize = 100; // Diameter of the target in pixels
-let spawnDecoy = true; // Boolean for spawning decoys
-let spawnIntervalRange = [1, 3]; // Range for random spawn intervals in seconds
+let lives = 3; // number of lives
+let targetTime = 2.0; // countdown in seconds
+let targetSize = 100; // diameter of the target in pixels
+let spawnDecoy = true; // boolean for spawning decoys
+let spawnIntervalRange = [1, 3]; // range for random spawn intervals in seconds
 let score = 0; // score counter
-let paused = false // Pause boolean
-let playing = false // Playing boolean
-let showCountdown = true // Show countdown boolean
-let gameDuration = false; // Game duration in seconds, false for infinite
+let paused = false // pause boolean
+let playing = false // playing boolean
+let showCountdown = true // show countdown boolean
+let gameDuration = false; // game duration in seconds, false for infinite
+let easy; // difficulty boolean
 
 let currentPlayerName;
 
@@ -52,7 +52,6 @@ function startGameTimer() {
 
         if (gameDuration <= 0) {
             clearInterval(timerInterval);
-            // Logic when time reaches 0
             updateLeaderboard(currentPlayerName, score);
             showNotification('Time\'s up! Game over', 'error', 3000);
             backToMenu();
@@ -77,7 +76,6 @@ function spawnTarget() {
     target.style.height = `${targetSize}px`;
     target.classList.add('game-object');
 
-    // Random position within the game area
     const x = Math.random() * (gameArea.clientWidth - targetSize);
     const y = Math.random() * (gameArea.clientHeight - targetSize);
 
@@ -92,7 +90,6 @@ function spawnTarget() {
         target.classList.remove('fadeIn');
     }, 100);
 
-    // Add shrinkOutline animation with dynamic duration
     target.style.animation = `shrinkOutline ${targetTime}s linear, fadeIn 0.3s`;
 
     if (!isDecoy) {
@@ -148,11 +145,10 @@ function spawnTarget() {
 
     gameArea.appendChild(target);
 
-    // Event listener for clicking the target or decoy
     target.addEventListener('click', () => {
         target.setAttribute('clicked', true);
         if (!isDecoy) {
-            score += 1; // Increment score
+            score += 1;
             scoreSpan.textContent = score;
             target.classList.add('fadeOut');
             setTimeout(() => {
@@ -161,7 +157,6 @@ function spawnTarget() {
                 }
             }, 300);
         } else {
-            // Penalise for clicking a red target
             if (!paused) {
                 lives -= 1;
                 document.getElementById('game-area').classList.add('lost-life');
@@ -305,25 +300,20 @@ function toggleDropdown(button) {
     arrow.classList.toggle("rotated");
 }
 
-// Function to select an option from the dropdown
 function selectOption(option, type, value) {
     const dropdown = option.closest('.dropdown');
     const button = dropdown.querySelector('.dropbtn');
 
     gameDuration = value;
 
-    // Update dropdown button text
     button.innerHTML = option.innerHTML + '<span class="material-symbols-outlined dropdown-arrow">keyboard_arrow_down</span>';
 
-    // Hide the dropdown content
     dropdown.querySelector('.dropdown-content').classList.remove("show");
 
-    // Reset the dropdown arrow rotation
     const arrow = button.querySelector('.dropdown-arrow');
     arrow.classList.remove("rotated");
 }
 
-// Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
     if (!event.target.closest('.dropdown')) {
         const dropdowns = document.getElementsByClassName("dropdown-content");
@@ -383,6 +373,14 @@ function areOptionsFilled() {
         return false;
     }
 
+    if (difficulty == 'Easy') {
+        easy = true;
+    }
+
+    if (difficulty == 'Hard') {
+        easy = false;
+    }
+
     return {
         name,
         difficulty,
@@ -415,6 +413,19 @@ function play() {
     showCountdown = true;
     updateLivesDisplay();
     updateTimeDisplay();
+
+    if(easy) {
+        targetTime = 3.0;
+        targetSize = 150;
+        spawnIntervalRange = [1, 3];
+    }
+
+    if(!easy) {
+        targetTime = 1.5;
+        targetSize = 75;
+        spawnIntervalRange = [0.5, 1.5];
+    }
+
     setTimeout(() => {
         if (!playing) {
             startSpawning();
@@ -438,6 +449,7 @@ function clearCache() {
     }
 }
 
+// my custom notif library that expects a message, type, and duration for its args
 function showNotification(message, type = 'info', duration = 5000) {
     actualDuration = duration + 500;
 
@@ -484,8 +496,8 @@ function showNotification(message, type = 'info', duration = 5000) {
     iconElem.style.color = color;
     notification.style.color = color;
     notification.style.backgroundColor = colorLight;
-    notification.style.setProperty('--timer-color', timerColor); // Set CSS variable
-    notification.style.setProperty('--timer-time', `${duration}ms`); // Set CSS variable with 'ms' unit
+    notification.style.setProperty('--timer-color', timerColor);
+    notification.style.setProperty('--timer-time', `${duration}ms`);
 
     notification.appendChild(iconElem);
     notification.appendChild(messageElem);
@@ -557,34 +569,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateLeaderboard(name, score) {
-    // Retrieve and update the leaderboard data
     let leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
     leaderboardData.push({ name, score });
 
-    // Sort the leaderboard data by score in descending order
     leaderboardData.sort((a, b) => b.score - a.score);
 
-    // Store the sorted leaderboard in localStorage
     localStorage.setItem('leaderboard', JSON.stringify(leaderboardData));
 
-    // Render the updated leaderboard
     renderLeaderboard(leaderboardData);
 }
 
 function loadLeaderboard() {
-    // Retrieve the leaderboard data from localStorage
     const leaderboardData = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
-    // Sort the leaderboard data by score in descending order
     leaderboardData.sort((a, b) => b.score - a.score);
 
-    // Render the sorted leaderboard
     renderLeaderboard(leaderboardData);
 }
 
 function renderLeaderboard(leaderboardData) {
     const leaderboard = document.querySelector('.leaderboard-scores');
-    leaderboard.innerHTML = ''; // Clear existing leaderboard entries
+    leaderboard.innerHTML = '';
 
     leaderboardData.forEach(entry => {
         const scoreEntry = document.createElement('div');
